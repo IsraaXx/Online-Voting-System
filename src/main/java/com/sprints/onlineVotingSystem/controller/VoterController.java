@@ -29,4 +29,15 @@ public class VoterController {
         List<Voter> voters = voterService.getVotersByCity(cityName);
         return ResponseEntity.ok(voters);
     }
+    
+    /**
+     * Get voter by ID
+     * @param id the voter ID
+     * @return the voter if found
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Voter> getVoterById(@PathVariable Long id) {
+        Voter voter = voterService.getVoterById(id);
+        return ResponseEntity.ok(voter);
+    }
 }

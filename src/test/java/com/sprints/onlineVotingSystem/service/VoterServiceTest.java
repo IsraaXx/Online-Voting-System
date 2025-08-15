@@ -2,6 +2,8 @@ package com.sprints.onlineVotingSystem.service;
 
 import com.sprints.onlineVotingSystem.domain.Role;
 import com.sprints.onlineVotingSystem.domain.Voter;
+import com.sprints.onlineVotingSystem.exception.BadRequestException;
+import com.sprints.onlineVotingSystem.exception.ResourceNotFoundException;
 import com.sprints.onlineVotingSystem.repository.VoterRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -89,38 +92,70 @@ class VoterServiceTest {
     }
 
     @Test
-    void getVotersByCity_ShouldReturnEmptyList_WhenCityIsEmpty() {
+    void getVotersByCity_ShouldThrowBadRequestException_WhenCityIsEmpty() {
         // Arrange
         String cityName = "";
-        List<Voter> expectedVoters = Collections.emptyList();
-        when(voterRepository.findByCity(cityName)).thenReturn(expectedVoters);
-
-        // Act
-        List<Voter> result = voterService.getVotersByCity(cityName);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(expectedVoters, result);
-        assertTrue(result.isEmpty());
         
-        verify(voterRepository, times(1)).findByCity(cityName);
+        // Act & Assert
+        BadRequestException exception = assertThrows(BadRequestException.class, 
+                () -> voterService.getVotersByCity(cityName));
+        assertEquals("City name cannot be null or empty", exception.getMessage());
+        
+        verify(voterRepository, never()).findByCity(anyString());
     }
 
     @Test
-    void getVotersByCity_ShouldReturnEmptyList_WhenCityIsNull() {
+    void getVotersByCity_ShouldThrowBadRequestException_WhenCityIsNull() {
         // Arrange
         String cityName = null;
-        List<Voter> expectedVoters = Collections.emptyList();
-        when(voterRepository.findByCity(cityName)).thenReturn(expectedVoters);
-
+        
+        // Act & Assert
+        BadRequestException exception = assertThrows(BadRequestException.class, 
+                () -> voterService.getVotersByCity(cityName));
+        assertEquals("City name cannot be null or empty", exception.getMessage());
+        
+        verify(voterRepository, never()).findByCity(anyString());
+    }
+    
+    @Test
+    void getVotersByCity_ShouldThrowBadRequestException_WhenCityIsOnlyWhitespace() {
+        // Arrange
+        String cityName = "   ";
+        
+        // Act & Assert
+        BadRequestException exception = assertThrows(BadRequestException.class, 
+                () -> voterService.getVotersByCity(cityName));
+        assertEquals("City name cannot be null or empty", exception.getMessage());
+        
+        verify(voterRepository, never()).findByCity(anyString());
+    }
+    
+    @Test
+    void getVoterById_ShouldReturnVoter_WhenVoterExists() {
+        // Arrange
+        Long voterId = 1L;
+        when(voterRepository.findById(voterId)).thenReturn(Optional.of(testVoter1));
+        
         // Act
-        List<Voter> result = voterService.getVotersByCity(cityName);
-
+        Voter result = voterService.getVoterById(voterId);
+        
         // Assert
         assertNotNull(result);
-        assertEquals(expectedVoters, result);
-        assertTrue(result.isEmpty());
+        assertEquals(testVoter1, result);
+        verify(voterRepository, times(1)).findById(voterId);
+    }
+    
+    @Test
+    void getVoterById_ShouldThrowResourceNotFoundException_WhenVoterDoesNotExist() {
+        // Arrange
+        Long voterId = 999L;
+        when(voterRepository.findById(voterId)).thenReturn(Optional.empty());
         
-        verify(voterRepository, times(1)).findByCity(cityName);
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, 
+                () -> voterService.getVoterById(voterId));
+        assertEquals("Voter not found with id : '999'", exception.getMessage());
+        
+        verify(voterRepository, times(1)).findById(voterId);
     }
 }
