@@ -23,11 +23,11 @@ public class Vote {
 
     private LocalDateTime voteTime;
 
-//-- Uncomment this after create Candidate class --
 
-//    @ManyToOne
-//    @JoinColumn(name = "candidate_id", nullable = false)
-//    private Candidate candidate;
+
+    @ManyToOne
+    @JoinColumn(name = "candidate_id", nullable = false)
+    private Candidate candidate;
 
     @ManyToOne
     @JoinColumn(name = "election_id", nullable = false)
