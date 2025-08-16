@@ -1,5 +1,7 @@
 package com.sprints.onlineVotingSystem.repository;
 
+import com.sprints.onlineVotingSystem.domain.Election;
+import com.sprints.onlineVotingSystem.domain.Voter;
 import com.sprints.onlineVotingSystem.dto.CandidateResultDTO;
 import com.sprints.onlineVotingSystem.domain.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,9 @@
 package com.sprints.onlineVotingSystem.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
@@ -18,11 +21,17 @@ public class Voter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false) private String name;
+    @NotBlank(message = "Name is required")
+    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    @Column(nullable = false) 
+    private String name;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Password hash is required")
     @Column(nullable = false)
     private String passwordHash;
 
@@ -31,6 +40,7 @@ public class Voter {
     private Role role;
 
     // for eligibility by city
+    @NotBlank(message = "City is required")
     @Column(nullable = false)
     private String city;
 

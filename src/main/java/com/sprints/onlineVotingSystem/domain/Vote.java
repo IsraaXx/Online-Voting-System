@@ -37,4 +37,8 @@ public class Vote {
     @JoinColumn(name = "voter_id", nullable = false)
     private Voter voter;
 
+    @PrePersist
+    protected void onCreate() {
+        voteTime = LocalDateTime.now();
+    }
 }

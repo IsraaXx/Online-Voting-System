@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "online-voting-system-api",
+		"name": "Online Voting System API",
+		"description": "Complete API collection for the Online Voting System including authentication, election management, voting, and results retrieval.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Voter Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"voter@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voters/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voters",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Operations",
+			"item": [
+				{
+					"name": "Create Election",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Presidential Election 2024\",\n  \"startDate\": \"2024-01-01\",\n  \"endDate\": \"2024-01-31\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/elections",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"elections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Elections",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/elections",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"elections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Candidate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"election\": {\n    \"id\": 1\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/candidates",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"candidates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Candidates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/candidates",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"candidates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Election Results",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/results",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"results"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Voter Operations",
+			"item": [
+				{
+					"name": "Get Candidates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{voter_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/voters/candidates",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voters",
+								"candidates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cast Vote",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{voter_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"candidateId\": 1,\n  \"electionId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/voters/vote?voterEmail={{voter_email}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voters",
+								"vote"
+							],
+							"query": [
+								{
+									"key": "voterEmail",
+									"value": "{{voter_email}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Voter by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{voter_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/voters/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voters",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Voters by City",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{voter_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/voters/city/New York",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"voters",
+								"city",
+								"New York"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "your_admin_jwt_token_here",
+			"type": "string"
+		},
+		{
+			"key": "voter_token",
+			"value": "your_voter_jwt_token_here",
+			"type": "string"
+		},
+		{
+			"key": "voter_email",
+			"value": "voter@example.com",
+			"type": "string"
+		}
+	]
+}

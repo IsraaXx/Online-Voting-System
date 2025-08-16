@@ -1,28 +1,19 @@
-package com.sprints.onlineVotingSystem.domain;
+package com.sprints.onlineVotingSystem.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "Election")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Election {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class ElectionDTO {
+    
     @NotBlank(message = "Election title is required")
     private String title;
     

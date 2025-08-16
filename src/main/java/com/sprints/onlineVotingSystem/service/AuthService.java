@@ -67,4 +67,51 @@ public class AuthService {
                 "Login successful"
         );
     }
+
+    /**
+     * Authenticates an admin and returns a JWT token
+     * 
+     * @param loginRequest The login credentials
+     * @return LoginResponseDTO containing the JWT token and user info
+     * @throws BadRequestException if credentials are invalid
+     */
+    public LoginResponseDTO authenticateAdmin(LoginRequestDTO loginRequest) {
+        log.info("Attempting to authenticate admin with email: {}", loginRequest.getEmail());
+        
+        // Validate input
+        if (loginRequest.getEmail() == null || loginRequest.getEmail().trim().isEmpty()) {
+            throw new BadRequestException("Email is required");
+        }
+        if (loginRequest.getPassword() == null || loginRequest.getPassword().trim().isEmpty()) {
+            throw new BadRequestException("Password is required");
+        }
+        
+        // Find admin by email
+        Voter admin = voterRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
+        
+        // Verify password
+        if (!passwordEncoder.matches(loginRequest.getPassword(), admin.getPasswordHash())) {
+            log.warn("Failed admin login attempt for email: {}", loginRequest.getEmail());
+            throw new BadRequestException("Invalid email or password");
+        }
+        
+        // Verify role is ADMIN
+        if (admin.getRole() != Role.ADMIN) {
+            log.warn("Access denied for non-admin user: {} with role: {}", loginRequest.getEmail(), admin.getRole());
+            throw new BadRequestException("Access denied. Admin role required.");
+        }
+        
+        // Generate JWT token
+        String token = jwtUtil.generateToken(admin.getEmail(), admin.getRole().name());
+        
+        log.info("Successful authentication for admin: {}", admin.getEmail());
+        
+        return new LoginResponseDTO(
+                token,
+                admin.getEmail(),
+                admin.getRole().name(),
+                "Admin login successful"
+        );
+    }
 }

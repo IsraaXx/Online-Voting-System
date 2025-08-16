@@ -3,13 +3,11 @@ package com.sprints.onlineVotingSystem.controller;
 import com.sprints.onlineVotingSystem.domain.Voter;
 import com.sprints.onlineVotingSystem.domain.Vote;
 import com.sprints.onlineVotingSystem.dto.CandidateDTO;
-import com.sprints.onlineVotingSystem.dto.LoginRequestDTO;
-import com.sprints.onlineVotingSystem.dto.LoginResponseDTO;
 import com.sprints.onlineVotingSystem.dto.VoteRequestDTO;
-import com.sprints.onlineVotingSystem.service.AuthService;
 import com.sprints.onlineVotingSystem.service.CandidateService;
 import com.sprints.onlineVotingSystem.service.VoterService;
 import com.sprints.onlineVotingSystem.service.VotingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,6 @@ import java.util.List;
 public class VoterController {
 
     private final VoterService voterService;
-    private final AuthService authService;
     private final CandidateService candidateService;
     private final VotingService votingService;
 
@@ -48,25 +45,6 @@ public class VoterController {
     public ResponseEntity<Voter> getVoterById(@PathVariable Long id) {
         Voter voter = voterService.getVoterById(id);
         return ResponseEntity.ok(voter);
-    }
-    
-    /**
-     * Voter login endpoint
-     * Authenticates voter credentials and returns JWT token
-     * 
-     * @param loginRequest The login credentials
-     * @return LoginResponseDTO containing JWT token and user info
-     */
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
-        log.info("Voter login attempt for email: {}", loginRequest.getEmail());
-        try {
-            LoginResponseDTO response = authService.authenticateVoter(loginRequest);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            log.error("Login failed for email: {} - Error: {}", loginRequest.getEmail(), e.getMessage());
-            throw e; // Let global exception handler deal with it
-        }
     }
     
     /**
@@ -96,7 +74,7 @@ public class VoterController {
      * @return ResponseEntity containing the created Vote
      */
     @PostMapping("/vote")
-    public ResponseEntity<Vote> castVote(@RequestBody VoteRequestDTO voteRequest, 
+    public ResponseEntity<Vote> castVote(@Valid @RequestBody VoteRequestDTO voteRequest, 
                                        @RequestParam String voterEmail) {
         log.info("Voter {} attempting to cast vote for candidate {} in election {}", 
                 voterEmail, voteRequest.getCandidateId(), voteRequest.getElectionId());
