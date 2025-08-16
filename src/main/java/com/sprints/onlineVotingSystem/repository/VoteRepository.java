@@ -17,4 +17,9 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
            "GROUP BY c.id, c.name " +
            "ORDER BY COUNT(v) DESC")
     List<CandidateResultDTO> getCandidateVoteCounts();
+    
+    /**
+     * Checks if a voter has already voted in a specific election
+     */
+    boolean existsByVoterAndElection(Voter voter, Election election);
 }

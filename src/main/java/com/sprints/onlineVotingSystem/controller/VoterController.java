@@ -1,12 +1,15 @@
 package com.sprints.onlineVotingSystem.controller;
 
 import com.sprints.onlineVotingSystem.domain.Voter;
+import com.sprints.onlineVotingSystem.domain.Vote;
 import com.sprints.onlineVotingSystem.dto.CandidateDTO;
 import com.sprints.onlineVotingSystem.dto.LoginRequestDTO;
 import com.sprints.onlineVotingSystem.dto.LoginResponseDTO;
+import com.sprints.onlineVotingSystem.dto.VoteRequestDTO;
 import com.sprints.onlineVotingSystem.service.AuthService;
 import com.sprints.onlineVotingSystem.service.CandidateService;
 import com.sprints.onlineVotingSystem.service.VoterService;
+import com.sprints.onlineVotingSystem.service.VotingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ public class VoterController {
     private final VoterService voterService;
     private final AuthService authService;
     private final CandidateService candidateService;
+    private final VotingService votingService;
 
     /**
      * Get all voters filtered by city
@@ -79,6 +83,28 @@ public class VoterController {
             return ResponseEntity.ok(candidates);
         } catch (Exception e) {
             log.error("Error retrieving candidates: {}", e.getMessage(), e);
+            throw e; // Let global exception handler deal with it
+        }
+    }
+    
+    /**
+     * Cast a vote for a candidate in an election
+     * Only authenticated voters can access this endpoint
+     * 
+     * @param voteRequest The voting request containing candidate and election IDs
+     * @param voterEmail The email of the authenticated voter (extracted from JWT)
+     * @return ResponseEntity containing the created Vote
+     */
+    @PostMapping("/vote")
+    public ResponseEntity<Vote> castVote(@RequestBody VoteRequestDTO voteRequest, 
+                                       @RequestParam String voterEmail) {
+        log.info("Voter {} attempting to cast vote for candidate {} in election {}", 
+                voterEmail, voteRequest.getCandidateId(), voteRequest.getElectionId());
+        try {
+            Vote vote = votingService.castVote(voteRequest, voterEmail);
+            return ResponseEntity.ok(vote);
+        } catch (Exception e) {
+            log.error("Voting failed for voter {}: {}", voterEmail, e.getMessage());
             throw e; // Let global exception handler deal with it
         }
     }

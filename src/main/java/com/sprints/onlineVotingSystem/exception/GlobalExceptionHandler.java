@@ -71,6 +71,46 @@ public class GlobalExceptionHandler {
     }
     
     /**
+     * Handle VotingClosedException - returns 400 status
+     */
+    @ExceptionHandler(VotingClosedException.class)
+    public ResponseEntity<ErrorResponse> handleVotingClosedException(
+            VotingClosedException ex, 
+            HttpServletRequest request) {
+        
+        logger.warn("Voting closed: {}", ex.getMessage());
+        
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Voting Closed",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+    
+    /**
+     * Handle UnassignedVoterException - returns 400 status
+     */
+    @ExceptionHandler(UnassignedVoterException.class)
+    public ResponseEntity<ErrorResponse> handleUnassignedVoterException(
+            UnassignedVoterException ex, 
+            HttpServletRequest request) {
+        
+        logger.warn("Unassigned voter: {}", ex.getMessage());
+        
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Voter Not Assigned",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+    
+    /**
      * Handle validation errors from @Valid annotations - returns 400 status
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
