@@ -1,4 +1,4 @@
-# Online Voting System
+# Online Voting System 🗳️
 
 A secure, role-based online voting system built with Spring Boot, featuring JWT authentication, role-based access control, and comprehensive voting management.
 
@@ -403,4 +403,5 @@ For support and questions:
 ---
 
 **Note**: This system is designed for educational and demonstration purposes. For production use, additional security measures, logging, and monitoring should be implemented.
+
 
